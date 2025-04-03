@@ -1,0 +1,58 @@
+# 이것도 파이썬 처럼 들여쓰기 중요
+# Workflow의 이름
+name: CI for Chat App
+
+# Event :  실행되는 시점 
+# main이라는 브런런치에 push 될때 아래 Workflow를 실행
+on:
+  push:
+    branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+# 하나의 Workflow는 1개 이상의 job으로 구성됨
+# 여러 Job은 기본적으로 병렬적으로 수행됨
+jobs:
+  build:
+  # os선택- latest(가장최신버전)
+    runs-on: ubuntu-latest
+    
+    # Steps : 특정 작업을 수행하는 가장 작은 단위
+    # Jop은 여러 Step들로 구성되어있다
+    steps:
+    - uses: actions/checkout@v4
+    - name: configure
+      run: ./configure
+      
+    - name: make
+      run: make
+      
+    - name: make check
+      run: make check
+
+    
+    - name: make distcheck
+      run: make distcheck
+
+    # 코드 스타일 검사
+    - name : code style 
+      run: npm run lint
+
+    # 테스트 실행
+    - name: test 
+      run: npm test
+
+    # Doker Hub로 이지지를 푸시하는 CI/CD추가 하는 기능
+    # - name: Docker buil and push
+    #   run: |    # "|" 이거 쓰면 여러줄 쓰는거 가능
+    #     echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" 
+    #     --password-stdin
+    #     docker build -t my-chat-app .
+    #     docker tag my-chat-app mydockerhubuser/my-chat-app:latest
+    #     docker push mydockerhubuser/my-chat-app:latest
+
+    
+
+
+
+    
